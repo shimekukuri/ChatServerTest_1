@@ -1,0 +1,8 @@
+{
+  "type":"module",
+  "dependencies": {
+    "@types/node": "^18.14.4",
+    "@types/ws": "^8.5.4",
+    "ws": "^8.12.1"
+  }
+}
