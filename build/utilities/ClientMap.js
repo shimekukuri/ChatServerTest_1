@@ -1,4 +1,4 @@
-export class ClientMap {
+class ClientMap {
     static instance;
     map;
     constructor() {
@@ -14,3 +14,5 @@ export class ClientMap {
         }
     };
 }
+const LocalClients = ClientMap.getInstance();
+export { LocalClients };
