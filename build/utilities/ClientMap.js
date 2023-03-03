@@ -14,5 +14,4 @@ class ClientMap {
         }
     };
 }
-const LocalClients = ClientMap.getInstance();
-export { LocalClients };
+export const LocalClients = ClientMap.getInstance();
