@@ -14,16 +14,8 @@ ws.on('message', (data) => {
 setTimeout(() => {
     ws.send(JSON.stringify({
         event: 'messageUser',
-        sendTo: '2',
+        sendTo: '2341',
         message: 'From Client 1',
+        from: '1',
     }));
 }, 5000);
-// ws.on('test', () => {
-//   ws.send(
-//     JSON.stringify({
-//       sendTo: 2,
-//       message: 'from client 1',
-//       event: 'messageUser',
-//     })
-//   );
-// });
