@@ -19,7 +19,7 @@ wss.on('connection', (ws, req) => {
       }
 
       case 'messageUser': {
-        const { message, sendTo } = ev;
+        const { message, sendTo, from } = ev;
         console.log(`Messaging User ${sendTo}, ${message}`);
         if (!message || !sendTo) {
           console.error('Incomplete Data');
@@ -33,7 +33,7 @@ wss.on('connection', (ws, req) => {
           sendTo
         ) as WebSocket.WebSocket;
         destination.send(
-          JSON.stringify({ message: message, event: 'message' })
+          JSON.stringify({ message: message, event: 'message', from: from })
         );
       }
     }
