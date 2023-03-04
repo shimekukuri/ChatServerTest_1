@@ -14,7 +14,7 @@ wss.on('connection', (ws, req) => {
                 break;
             }
             case 'messageUser': {
-                const { message, sendTo } = ev;
+                const { message, sendTo, from } = ev;
                 console.log(`Messaging User ${sendTo}, ${message}`);
                 if (!message || !sendTo) {
                     console.error('Incomplete Data');
@@ -25,7 +25,7 @@ wss.on('connection', (ws, req) => {
                     ws.send(JSON.stringify({ message: 'User Not Logged In', error: 2 }));
                 }
                 const destination = LocalClients.map?.get(sendTo);
-                destination.send(JSON.stringify({ message: message, event: 'message' }));
+                destination.send(JSON.stringify({ message: message, event: 'message', from: from }));
             }
         }
     });
