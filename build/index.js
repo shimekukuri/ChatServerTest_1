@@ -23,9 +23,16 @@ wss.on('connection', (ws, req) => {
                 if (!LocalClients.map?.has(sendTo)) {
                     console.error('Cannot Find User');
                     ws.send(JSON.stringify({ message: 'User Not Logged In', error: 2 }));
+                    return;
                 }
                 const destination = LocalClients.map?.get(sendTo);
-                destination.send(JSON.stringify({ message: message, event: 'message', from: from }));
+                try {
+                    destination.send(JSON.stringify({ message: message, event: 'message', from: from }));
+                }
+                catch (err) {
+                    console.error(err);
+                }
+                break;
             }
         }
     });
