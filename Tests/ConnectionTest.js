@@ -7,7 +7,7 @@ ws.on('message', (data) => {
     const ev = JSON.parse(data.toString());
     switch (ev.event) {
         case 'register': {
-            ws.send(JSON.stringify({ event: 'register', userID: '1' }));
+            ws.send(JSON.stringify({ event: 'register', userID: '1', userName: 'Test1' }));
             break;
         }
         case 'message': {

@@ -1,5 +1,6 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import { LocalClients } from './utilities/ClientMap.js';
+import { ResolveName } from './utilities/NameResolution.js';
 // import './index2.js';
 
 const wss = new WebSocketServer({ port: 5555 });
@@ -12,9 +13,12 @@ wss.on('connection', (ws, req) => {
 
     switch (ev.event) {
       case 'register': {
+        console.log(ev);
+        if (LocalClients.map?.has(ev.userID)) {
+          return;
+        }
+        ResolveName.map?.set(ev.userName, ev.userID);
         LocalClients.map?.set(ev.userID, ws);
-        console.log(LocalClients.map?.entries());
-        console.log(wss.clients.size);
         break;
       }
 
@@ -41,6 +45,17 @@ wss.on('connection', (ws, req) => {
           console.error(err);
         }
         break;
+      }
+
+      case 'findUser': {
+        if (ResolveName.map?.has(ev.userName)) {
+          ws.send(
+            JSON.stringify({
+              userID: ResolveName.map?.get(ev.userName),
+              event: 'userFound',
+            })
+          );
+        }
       }
     }
   });
