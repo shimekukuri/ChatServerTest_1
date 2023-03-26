@@ -5,27 +5,27 @@ import { ResolveName } from './utilities/NameResolution.js';
 const wss = new WebSocketServer({ port: 5555 });
 wss.on('connection', (ws, req) => {
     ws.send(JSON.stringify({ event: 'register' }));
+    ws.on('close', () => { });
     ws.on('message', (data) => {
         const ev = JSON.parse(data.toString());
         switch (ev.event) {
             case 'register': {
-                console.log(ev);
-                if (LocalClients.map?.has(ev.userID)) {
-                    return;
-                }
                 ResolveName.map?.set(ev.userName, ev.userID);
+                console.log('Resolver added:', ResolveName.map?.get(ev.userName));
                 LocalClients.map?.set(ev.userID, ws);
+                console.log('Active Users:', LocalClients?.map?.size);
                 break;
             }
             case 'messageUser': {
                 const { message, sendTo, from } = ev;
+                console.log(from);
                 console.log(`Messaging User ${sendTo}, ${message}`);
                 if (!message || !sendTo) {
                     console.error('Incomplete Data');
                     ws.send(JSON.stringify({ message: 'Incomplete Data', error: 1 }));
                 }
                 if (!LocalClients.map?.has(sendTo)) {
-                    console.error('Cannot Find User');
+                    console.error('Cannot Find User:', sendTo);
                     ws.send(JSON.stringify({ message: 'User Not Logged In', error: 2 }));
                     return;
                 }
@@ -39,29 +39,31 @@ wss.on('connection', (ws, req) => {
                 break;
             }
             case 'findUser': {
+                console.log('findUser fired');
+                console.log('ev.userName:', ev.userName);
+                console.log(ResolveName.map?.entries());
+                console.log(ResolveName.map?.get(ev.userName));
+                console.log(ResolveName.map?.has(ev.userName));
                 if (ResolveName.map?.has(ev.userName)) {
                     ws.send(JSON.stringify({
                         userID: ResolveName.map?.get(ev.userName),
                         event: 'userFound',
                     }));
                 }
+                break;
             }
+            case 'disconnect':
+                {
+                    if (ResolveName.map?.has(ev.userName)) {
+                        ResolveName.map?.delete(ev.userName);
+                        console.log(ev.userName, 'removed from Name Resolver');
+                    }
+                    if (LocalClients.map?.has(ev.userID)) {
+                        LocalClients.map?.delete(ev.userID);
+                        console.log(ev.userName, 'has been removed from LocalClients');
+                    }
+                }
+                break;
         }
     });
 });
-// wss.on('connection', (ws, req) => {
-//   ws.on('message', (data) => {
-//     const event = JSON.parse(data.toString());
-//     switch(event.event) {
-//       case 'messageUser': {
-//         let clientID = event.sentTo;
-//       }
-//     }
-//     let clientID = JSON.parse(req.toString());
-//     LocalClients.map?.set(clientID.user, ws);
-//     // console.log(LocalClients.map?.entries());
-//     console.log('fired');
-//     const x = JSON.parse(data.toString());
-//     // console.log(LocalClients.map?.get(x.sentTo));
-//   });
-// });
