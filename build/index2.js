@@ -14,8 +14,8 @@ wss.on('connection', (ws, req) => {
                 ResolveName.addName(ev.userName, ev.userID);
                 console.log('Resolver added:', ResolveName.find(ev.userName));
                 LocalClients.map?.set(ev.userID, new ClientSocket(ws));
+                //new ClientSocket works integrate it into the other functions of the wss server better.
                 console.log('Active Users:', LocalClients?.map?.size);
-                console.log('LocalClients.map: ', LocalClients.map);
                 break;
             }
             case 'messageUser': {
