@@ -44,6 +44,10 @@ class ClientMap {
   public size = () => {
     return this.map?.size;
   };
+
+  public get clients() {
+    return this.map.entries();
+  }
 }
 
 export const LocalClients = ClientMap.getInstance();

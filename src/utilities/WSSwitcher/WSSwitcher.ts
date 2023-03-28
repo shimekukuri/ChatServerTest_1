@@ -2,13 +2,11 @@ import { LocalClients } from './ClientMap/ClientMapV2.js';
 import { ResolveName } from '../NameResolutionV2.js';
 import { ClientSocket } from '../ClientSocket.js';
 import { WebSocket } from 'ws';
-import { send } from 'process';
-import { join } from 'path';
 
 export class WSSwitcher {
-  events: Map<string, any>;
-  IdResolver: typeof LocalClients;
-  NameResolver: typeof ResolveName;
+  private events: Map<string, any>;
+  private IdResolver: typeof LocalClients;
+  private NameResolver: typeof ResolveName;
 
   constructor() {
     this.events = new Map();
@@ -16,21 +14,51 @@ export class WSSwitcher {
     this.NameResolver = ResolveName;
   }
 
-  eventInterface = (event: any, ws?: WebSocket) => {};
+  eventInterface = (event: any, ws?: WebSocket) => {
+    console.log(event);
+    switch (event.event) {
+      case 'register': {
+        if (ws === undefined) {
+          //handle undefined websocket
+          return;
+        }
+        this.register(event.userName, event.userID, ws);
+        break;
+      }
+      case 'messageUser': {
+        if (ws === undefined) {
+          //handle undefined websocket
+          return;
+        }
+        this.messageUser(event.message, event.sendTo, event.from, ws);
+        break;
+      }
+      case 'findUser': {
+        if (ws === undefined) {
+          //handle undefined websocket
+          return;
+        }
+        this.findUser(event.userName, ws);
+        break;
+      }
+    }
+  };
 
-  register = (userName: string, userID: string, ws?: WebSocket) => {
+  private register = (userName: string, userID: string, ws: WebSocket) => {
     try {
       if (ws === undefined) {
         return new Error('WebSocket required');
       }
       this.NameResolver.addName(userName, userID);
       this.IdResolver.addClient(userID, new ClientSocket(ws));
+      console.log(this.NameResolver.clients);
+      console.log(this.IdResolver.clients);
     } catch (err) {
       console.error(err);
     }
   };
 
-  messageUser = (
+  private messageUser = (
     message: string,
     sendTo: string,
     from: string,
@@ -45,17 +73,24 @@ export class WSSwitcher {
 
     try {
       const destination = this.IdResolver.get(sendTo) as ClientSocket;
+      console.log(destination);
       destination.messageUser(message, from);
     } catch (err) {
-      ws.send(JSON.stringify({ event: 'messageError', message: err }));
+      ws.send(JSON.stringify({ event: 'error', message: err }));
     }
   };
 
-  findUser = (userName: string, ws: WebSocket) => {
+  private findUser = (userName: string, ws: WebSocket) => {
     try {
       let userId = this.IdResolver.get(userName);
       ws.send(JSON.stringify({ event: 'findUser', userId: userId }));
-    } catch (err) {}
+    } catch (err) {
+      ws.send(JSON.stringify({ event: 'error', message: err }));
+    }
+  };
+
+  private disconnect = (userId: string) => {
+    this.IdResolver.removeClient(userId);
   };
 }
 

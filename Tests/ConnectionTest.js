@@ -9,8 +9,8 @@ ws.on('message', (data) => {
         case 'register': {
             ws.send(JSON.stringify({
                 event: 'register',
-                userID: '4',
-                userName: 'ConnectionTest3',
+                userID: '1',
+                userName: 'ConnectionTest1',
             }));
             break;
         }
@@ -32,7 +32,7 @@ setTimeout(() => {
     ws.send(JSON.stringify({
         event: 'messageUser',
         sendTo: '2',
-        message: 'From Client 4',
+        message: 'From Client 1',
         from: '1',
         date: new Date().toLocaleTimeString(),
     }));

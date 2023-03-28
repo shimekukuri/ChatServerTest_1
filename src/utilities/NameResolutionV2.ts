@@ -37,6 +37,10 @@ class NameRolution {
     }
     return this.map.get(name);
   };
+
+  public get clients() {
+    return this.map.entries;
+  }
 }
 
 export const ResolveName = NameRolution.getInstance();

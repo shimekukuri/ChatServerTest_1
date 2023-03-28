@@ -10,7 +10,35 @@ export class WSSwitcher {
         this.IdResolver = LocalClients;
         this.NameResolver = ResolveName;
     }
-    eventInterface = (event, ws) => { };
+    eventInterface = (event, ws) => {
+        console.log(event);
+        switch (event.event) {
+            case 'register': {
+                if (ws === undefined) {
+                    //handle undefined websocket
+                    return;
+                }
+                this.register(event.userName, event.userID, ws);
+                break;
+            }
+            case 'messageUser': {
+                if (ws === undefined) {
+                    //handle undefined websocket
+                    return;
+                }
+                this.messageUser(event.message, event.sendTo, event.from, ws);
+                break;
+            }
+            case 'findUser': {
+                if (ws === undefined) {
+                    //handle undefined websocket
+                    return;
+                }
+                this.findUser(event.userName, ws);
+                break;
+            }
+        }
+    };
     register = (userName, userID, ws) => {
         try {
             if (ws === undefined) {
@@ -18,6 +46,8 @@ export class WSSwitcher {
             }
             this.NameResolver.addName(userName, userID);
             this.IdResolver.addClient(userID, new ClientSocket(ws));
+            console.log(this.NameResolver.clients);
+            console.log(this.IdResolver.clients);
         }
         catch (err) {
             console.error(err);
@@ -30,17 +60,24 @@ export class WSSwitcher {
         }
         try {
             const destination = this.IdResolver.get(sendTo);
+            console.log(destination);
             destination.messageUser(message, from);
         }
         catch (err) {
-            ws.send(JSON.stringify({ event: 'messageError', message: err }));
+            ws.send(JSON.stringify({ event: 'error', message: err }));
         }
     };
-    findUser = (userName) => {
+    findUser = (userName, ws) => {
         try {
-            this.IdResolver.get(userName);
+            let userId = this.IdResolver.get(userName);
+            ws.send(JSON.stringify({ event: 'findUser', userId: userId }));
         }
-        catch (err) { }
+        catch (err) {
+            ws.send(JSON.stringify({ event: 'error', message: err }));
+        }
+    };
+    disconnect = (userId) => {
+        this.IdResolver.removeClient(userId);
     };
 }
 // switch (ev.event) {
