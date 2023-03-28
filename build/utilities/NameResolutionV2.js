@@ -14,9 +14,19 @@ class NameRolution {
         }
     };
     addName = (name, id) => {
+        if (this.map?.has(name)) {
+            return new Error('User Already Exists');
+        }
         this.map?.set(name, id);
+        return true;
     };
-    removeName = (name, id) => [this.map?.delete(name)];
+    removeName = (name, id) => {
+        if (!this.map?.has(name)) {
+            return new Error('User does not exist');
+        }
+        this.map?.delete(name);
+        return true;
+    };
     find = (name) => {
         if (!this.map.has(name)) {
             throw new Error('User Not Found');

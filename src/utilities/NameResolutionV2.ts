@@ -15,13 +15,23 @@ class NameRolution {
     }
   };
 
-  addName = (name: string, id: string) => {
+  public addName = (name: string, id: string) => {
+    if (this.map?.has(name)) {
+      return new Error('User Already Exists');
+    }
     this.map?.set(name, id);
+    return true;
   };
 
-  removeName = (name: string, id: string) => [this.map?.delete(name)];
+  public removeName = (name: string, id: string) => {
+    if (!this.map?.has(name)) {
+      return new Error('User does not exist');
+    }
+    this.map?.delete(name);
+    return true;
+  };
 
-  find = (name: string) => {
+  public find = (name: string) => {
     if (!this.map.has(name)) {
       throw new Error('User Not Found');
     }

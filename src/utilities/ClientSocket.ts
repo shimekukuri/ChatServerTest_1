@@ -7,7 +7,7 @@ export class ClientSocket {
     this.webSocket = webSocket;
   }
 
-  message = (message: string, from: string) => {
+  messageUser = (message: string, from: string): void => {
     this.webSocket.send(
       JSON.stringify({ event: 'message', message: message, from: from })
     );
