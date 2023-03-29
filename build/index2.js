@@ -1,6 +1,5 @@
 import { WebSocketServer } from 'ws';
 import { WSSwitcher } from './utilities/WSSwitcher/WSSwitcher.js';
-// import './index2.js';
 const wss = new WebSocketServer({ port: 5556 });
 const switcher = new WSSwitcher();
 wss.on('connection', (ws, req) => {
