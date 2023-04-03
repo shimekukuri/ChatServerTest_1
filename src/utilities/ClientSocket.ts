@@ -1,5 +1,9 @@
 import { WebSocket } from 'ws';
 
+interface eventDetail {
+  //finish this
+}
+
 export class ClientSocket {
   webSocket: WebSocket;
   id: string;
@@ -12,6 +16,12 @@ export class ClientSocket {
   messageUser = (message: string, from: string): void => {
     this.webSocket.send(
       JSON.stringify({ event: 'message', message: message, from: from })
+    );
+  };
+
+  eventMatch = (eventDetails: any): void => {
+    this.webSocket.send(
+      JSON.stringify({ event: 'eventMatch', data: eventDetails })
     );
   };
 

@@ -8,6 +8,9 @@ export class ClientSocket {
     messageUser = (message, from) => {
         this.webSocket.send(JSON.stringify({ event: 'message', message: message, from: from }));
     };
+    eventMatch = (eventDetails) => {
+        this.webSocket.send(JSON.stringify({ event: 'eventMatch', data: eventDetails }));
+    };
     close = () => {
         this.webSocket.close();
     };
