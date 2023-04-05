@@ -1,9 +1,9 @@
 export class EventLeaf {
     clients;
-    value;
-    constructor(value) {
+    val;
+    constructor(val) {
         this.clients = [];
-        this.value = {};
+        this.val = val;
     }
     addClient = (ws) => {
         this.clients.push(ws);
@@ -13,7 +13,7 @@ export class EventLeaf {
     };
     sendEvent = () => {
         for (let i = 0; i < this.clients.length; i++) {
-            this.clients[i].eventMatch(this.value);
+            this.clients[i].eventMatch(this.val);
         }
     };
 }
