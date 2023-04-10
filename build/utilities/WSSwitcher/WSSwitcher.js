@@ -1,6 +1,6 @@
 import { LocalClients } from './ClientMap/ClientMapV2.js';
 import { ResolveName } from '../NameResolutionV2.js';
-import { ClientSocket } from '../ClientSocket.js';
+import { ClientSocket } from '../ClientSockt/ClientSocket.js';
 export class WSSwitcher {
     events;
     IdResolver;

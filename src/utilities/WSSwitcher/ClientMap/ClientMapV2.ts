@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import { ClientSocket } from '../../ClientSocket.js';
+import { ClientSocket } from '../../ClientSockt/ClientSocket.js';
 
 class ClientMap {
   private static instance: ClientMap;

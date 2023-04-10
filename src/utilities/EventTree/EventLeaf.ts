@@ -1,18 +1,18 @@
-import { ClientSocket } from '../ClientSocket.js';
-
-export interface leafValue {
-  name: string;
-  image?: string;
-  data: {};
-}
+import { ClientSocket } from '../ClientSockt/ClientSocket.js';
 
 export class EventLeaf {
   clients: ClientSocket[];
-  val: leafValue;
+  val: string;
+  name?: string;
+  image?: string;
+  data: {};
 
-  constructor(val: leafValue) {
+  constructor(val: string, name?: string, image?: string, data?: {}) {
     this.clients = [];
     this.val = val;
+    this.name = name ? name : '';
+    this.image = image ? image : '';
+    this.data = data ? data : {};
   }
 
   addClient = (ws: ClientSocket) => {
@@ -25,7 +25,12 @@ export class EventLeaf {
 
   sendEvent = () => {
     for (let i = 0; i < this.clients.length; i++) {
-      this.clients[i].eventMatch(this.val);
+      this.clients[i].eventMatch({
+        val: this.val,
+        name: this.name,
+        image: this.image,
+        data: this.data,
+      });
     }
   };
 }
