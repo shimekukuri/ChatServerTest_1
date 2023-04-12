@@ -1,3 +1,4 @@
+import { EventBranch } from './EventBranch.js';
 import { EventTree } from './EventTree.js';
 
 describe('Testing Tree Methods', () => {
@@ -5,5 +6,13 @@ describe('Testing Tree Methods', () => {
     const tree = new EventTree();
     const instance = tree instanceof EventTree;
     expect<boolean>(instance).toBe(true);
+  });
+
+  test('method addTrunk', () => {
+    const tree = new EventTree();
+    tree.addTrunk('test', 'test', 'test');
+
+    //@ts-ignore
+    expect(Object.entries(tree.trunks).length).toBe(1);
   });
 });

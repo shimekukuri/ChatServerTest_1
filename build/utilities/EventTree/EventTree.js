@@ -17,7 +17,6 @@ export class EventTree {
             this.trunks[key] = new EventBranch(key, val, image, {
                 val: 'test',
             });
-            this.trunks[key].addBranch([...args]);
             return true;
         }
         else {
