@@ -1,11 +1,17 @@
-import { leafValue } from './EventLeaf.js';
+import { Conditions } from './EventTree.js';
 
 export class EventBranch {
-  public val: leafValue;
+  val: string;
+  name?: string;
+  image?: string;
+  data: {};
   private branches: EventBranch[] | [];
 
-  constructor(val: leafValue) {
+  constructor(val: string, name?: string, image?: string, data?: {}) {
     this.val = val;
+    this.name = name ? name : '';
+    this.image = image ? image : '';
+    this.data = data ? data : {};
     this.branches = [];
   }
 
@@ -20,11 +26,11 @@ export class EventBranch {
     return arr;
   };
 
-  addBranch = () => {};
+  addBranch = (conditions: Conditions[]) => {};
 
   addLeaf = () => {};
 }
 
-const meep = new EventBranch({ name: 'test', image: '', data: {} });
+const meep = new EventBranch('test', 'test', 'test', { val: 'test' });
 
 console.log(meep.val);

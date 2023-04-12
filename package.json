@@ -1,8 +1,15 @@
 {
-  "type":"module",
+  "type": "module",
   "dependencies": {
+    "@types/jest": "^29.5.0",
     "@types/node": "^18.14.4",
     "@types/ws": "^8.5.4",
     "ws": "^8.12.1"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest ./build"
   }
 }

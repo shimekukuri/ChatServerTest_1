@@ -1,8 +1,14 @@
 export class EventBranch {
     val;
+    name;
+    image;
+    data;
     branches;
-    constructor(val) {
+    constructor(val, name, image, data) {
         this.val = val;
+        this.name = name ? name : '';
+        this.image = image ? image : '';
+        this.data = data ? data : {};
         this.branches = [];
     }
     bfs = (condition) => {
@@ -14,8 +20,8 @@ export class EventBranch {
         }
         return arr;
     };
-    addBranch = () => { };
+    addBranch = (conditions) => { };
     addLeaf = () => { };
 }
-const meep = new EventBranch({ name: 'test', image: '', data: {} });
+const meep = new EventBranch('test', 'test', 'test', { val: 'test' });
 console.log(meep.val);
