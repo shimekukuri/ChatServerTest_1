@@ -43,3 +43,30 @@ setTimeout(() => {
         userName: 'mar91248',
     }));
 }, 2000);
+setTimeout(() => {
+    ws.send(JSON.stringify({
+        event: 'event',
+        sendTo: '640a1e56605518b3b74dc4d1',
+        image: '',
+        text: 'test 1',
+        timer: 10000,
+    }));
+}, 1000);
+setTimeout(() => {
+    ws.send(JSON.stringify({
+        event: 'event',
+        sendTo: '640a1e56605518b3b74dc4d1',
+        image: '',
+        text: 'test 2',
+        timer: 10000,
+    }));
+}, 2000);
+setTimeout(() => {
+    ws.send(JSON.stringify({
+        event: 'event',
+        sendTo: '640a1e56605518b3b74dc4d1',
+        image: '',
+        text: 'test 3',
+        timer: 10000,
+    }));
+}, 3000);

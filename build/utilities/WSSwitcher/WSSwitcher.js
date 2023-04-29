@@ -18,6 +18,7 @@ export class WSSwitcher {
                     return;
                 }
                 this.register(event.userName, event.userID, ws);
+                ws.ping(JSON.stringify({ event: 'ping', message: 'ping' }));
                 break;
             }
             case 'messageUser': {
@@ -25,6 +26,7 @@ export class WSSwitcher {
                     //handle undefined websocket
                     return;
                 }
+                console.log(event);
                 this.messageUser(event.message, event.sendTo, event.from, ws);
                 break;
             }
@@ -34,6 +36,31 @@ export class WSSwitcher {
                     return;
                 }
                 this.findUser(event.userName, ws);
+                break;
+            }
+            case 'disconnect': {
+                console.log('fired 2');
+                this.disconnect('', ws);
+                break;
+            }
+            case 'pong': {
+                try {
+                    const user = this.IdResolver.get(event.from);
+                    user.terminate = false;
+                    console.log('ponged');
+                }
+                catch (e) {
+                    console.error(e);
+                }
+                break;
+            }
+            case 'event': {
+                if (ws === undefined) {
+                    //handle undefined websocket
+                    return;
+                }
+                console.log(event);
+                this.sendEvent(event.text, event.sendTo, 10000, '', ws);
                 break;
             }
         }
@@ -50,7 +77,24 @@ export class WSSwitcher {
             console.error(err);
         }
     };
+    sendEvent = (message, sendTo, timer, image = '', ws) => {
+        if (message === '' || sendTo === '' || timer === 0) {
+            ws.send(JSON.stringify({ event: 'messageError', message: 'Missing Fields' }));
+        }
+        try {
+            const destination = this.IdResolver.get(sendTo);
+            destination.eventMatch({
+                text: message,
+                image: image,
+                timer: 10000,
+            });
+        }
+        catch (err) {
+            ws.send(JSON.stringify({ event: 'error', message: err }));
+        }
+    };
     messageUser = (message, sendTo, from, ws) => {
+        console.log('messageUser fired');
         if (message === '' || sendTo === '' || from === '') {
             ws.send(JSON.stringify({ event: 'messageError', message: 'Missing Fields' }));
             return;
@@ -63,6 +107,7 @@ export class WSSwitcher {
             ws.send(JSON.stringify({ event: 'error', message: err }));
         }
     };
+    findLocalUser = (userName, ws) => { };
     findUser = (userName, ws) => {
         try {
             let userId = this.IdResolver.get(userName);
@@ -72,7 +117,13 @@ export class WSSwitcher {
             ws.send(JSON.stringify({ event: 'error', message: err }));
         }
     };
-    disconnect = (userId) => {
-        this.IdResolver.removeClient(userId);
+    disconnect = (userId, ws) => {
+        console.log(ws);
+        if (userId === undefined && ws) {
+            for (let client of this.IdResolver.clients) {
+                console.log(client);
+            }
+        }
+        // this.IdResolver.removeClient(userId);
     };
 }

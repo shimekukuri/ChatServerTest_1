@@ -3,6 +3,8 @@ import { ResolveName } from '../NameResolutionV2.js';
 import { ClientSocket } from '../ClientSockt/ClientSocket.js';
 import { WebSocket } from 'ws';
 
+//create an interval that checks the ping status
+
 export class WSSwitcher {
   private events: Map<string, any>;
   private IdResolver: typeof LocalClients;
@@ -14,7 +16,7 @@ export class WSSwitcher {
     this.NameResolver = ResolveName;
   }
 
-  eventInterface = (event: any, ws?: WebSocket) => {
+  eventInterface = (event: any, ws: WebSocket) => {
     switch (event.event) {
       case 'register': {
         if (ws === undefined) {
@@ -22,6 +24,7 @@ export class WSSwitcher {
           return;
         }
         this.register(event.userName, event.userID, ws);
+        ws.ping(JSON.stringify({ event: 'ping', message: 'ping' }));
         break;
       }
       case 'messageUser': {
@@ -29,6 +32,7 @@ export class WSSwitcher {
           //handle undefined websocket
           return;
         }
+        console.log(event);
         this.messageUser(event.message, event.sendTo, event.from, ws);
         break;
       }
@@ -38,6 +42,31 @@ export class WSSwitcher {
           return;
         }
         this.findUser(event.userName, ws);
+        break;
+      }
+      case 'disconnect': {
+        console.log('fired 2');
+        this.disconnect('', ws);
+        break;
+      }
+      case 'pong': {
+        try {
+          const user = this.IdResolver.get(event.from) as ClientSocket;
+          user.terminate = false;
+          console.log('ponged');
+        } catch (e) {
+          console.error(e);
+        }
+
+        break;
+      }
+      case 'event': {
+        if (ws === undefined) {
+          //handle undefined websocket
+          return;
+        }
+        console.log(event);
+        this.sendEvent(event.text, event.sendTo, 10000, '', ws);
         break;
       }
     }
@@ -55,12 +84,39 @@ export class WSSwitcher {
     }
   };
 
+  private sendEvent = (
+    message: string,
+    sendTo: string,
+    timer: number,
+    image: string = '',
+    ws: WebSocket
+  ) => {
+    if (message === '' || sendTo === '' || timer === 0) {
+      ws.send(
+        JSON.stringify({ event: 'messageError', message: 'Missing Fields' })
+      );
+    }
+
+    try {
+      const destination = this.IdResolver.get(sendTo) as ClientSocket;
+
+      destination.eventMatch({
+        text: message,
+        image: image,
+        timer: 10000,
+      });
+    } catch (err) {
+      ws.send(JSON.stringify({ event: 'error', message: err }));
+    }
+  };
+
   private messageUser = (
     message: string,
     sendTo: string,
     from: string,
     ws: WebSocket
   ) => {
+    console.log('messageUser fired');
     if (message === '' || sendTo === '' || from === '') {
       ws.send(
         JSON.stringify({ event: 'messageError', message: 'Missing Fields' })
@@ -76,6 +132,8 @@ export class WSSwitcher {
     }
   };
 
+  private findLocalUser = (userName: string, ws: WebSocket) => {};
+
   private findUser = (userName: string, ws: WebSocket) => {
     try {
       let userId = this.IdResolver.get(userName);
@@ -85,7 +143,13 @@ export class WSSwitcher {
     }
   };
 
-  private disconnect = (userId: string) => {
-    this.IdResolver.removeClient(userId);
+  private disconnect = (userId: string | undefined, ws: WebSocket) => {
+    console.log(ws);
+    if (userId === undefined && ws) {
+      for (let client of this.IdResolver.clients) {
+        console.log(client);
+      }
+    }
+    // this.IdResolver.removeClient(userId);
   };
 }
