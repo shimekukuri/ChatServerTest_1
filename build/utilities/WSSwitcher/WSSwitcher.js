@@ -1,6 +1,7 @@
 import { LocalClients } from './ClientMap/ClientMapV2.js';
 import { ResolveName } from '../NameResolutionV2.js';
 import { ClientSocket } from '../ClientSockt/ClientSocket.js';
+//create an interval that checks the ping status
 export class WSSwitcher {
     events;
     IdResolver;
