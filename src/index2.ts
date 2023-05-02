@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+import { ClientPrune } from './utilities/clientPruning/clientPruning.js';
 import { WSSwitcher } from './utilities/WSSwitcher/WSSwitcher.js';
 
 const wss = new WebSocketServer({ port: 5555 });
@@ -13,6 +14,4 @@ wss.on('connection', (ws, req) => {
   });
 });
 
-setInterval(() => {
-  wss.clients.forEach((x) => console.log(x));
-}, 1000);
+const prune = new ClientPrune();
