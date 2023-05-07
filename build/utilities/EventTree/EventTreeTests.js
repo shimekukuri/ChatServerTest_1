@@ -1,4 +1,4 @@
 import { EventTree } from './EventTree.js';
 const Tree = new EventTree();
-Tree.addTrunk('pokemon', 'pokemon scarlet');
+Tree.addTrunk('Pokemon Scarlet', 'pokemon');
 console.log(Tree);

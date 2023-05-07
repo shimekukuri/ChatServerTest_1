@@ -3,7 +3,8 @@ import { ResolveName } from '../NameResolutionV2.js';
 import { ClientSocket } from '../ClientSockt/ClientSocket.js';
 import { WebSocket } from 'ws';
 
-//create an interval that checks the ping status
+//create an interval that checks the ping status, iterate through each connection and fire a promise ping if any of them fail within 3000
+//than terminate the connection and remove them from the Resolvers. 
 
 export class WSSwitcher {
   private events: Map<string, any>;
@@ -39,6 +40,7 @@ export class WSSwitcher {
       case 'findUser': {
         if (ws === undefined) {
           //handle undefined websocket
+          this.IdResolver.
           return;
         }
         this.findUser(event.userName, ws);

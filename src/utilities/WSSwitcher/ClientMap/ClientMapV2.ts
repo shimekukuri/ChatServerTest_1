@@ -16,6 +16,7 @@ class ClientMap {
     } else {
       return ClientMap.instance;
     }
+
   };
 
   public addClient = (userId: string, ws: ClientSocket) => {
@@ -23,6 +24,9 @@ class ClientMap {
       return new Error('User Already Exists');
     }
     this.map?.set(userId, ws);
+    setTimeout(() => {
+      ws.
+    })
     return true;
   };
 

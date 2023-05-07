@@ -18,6 +18,10 @@ class ClientMap {
             return new Error('User Already Exists');
         }
         this.map?.set(userId, ws);
+        setTimeout(() => {
+            ws.
+            ;
+        });
         return true;
     };
     removeClient = (userId) => {
